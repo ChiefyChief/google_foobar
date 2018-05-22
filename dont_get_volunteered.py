@@ -1,3 +1,5 @@
+# Work in progress... accidentally forgot to submit during 72 hours
+
 class UnitTest:
 
     def __init__(self, src, dst, expected_result):
@@ -6,88 +8,42 @@ class UnitTest:
         self.expected_result = expected_result
 
 
-class ChessGame:
+def find_point(number):
+    x = number / 8
+    y = number % 8
+    coordinate = (x, y)
 
-    def __init__(self, src, dst):
-        self.matrix = self.build_matrix()
-        self.src = src
-        self.dst = dst
-        self.sx, self.sy = find_point(self.matrix, self.src)
-        self.dx, self.dy = find_point(self.matrix, self.dst)
+    return coordinate
 
 
-    def build_matrix(self):
-        matrix = []
-        matrix_count = 0
-
-        for _ in range(8):
-            new_row = []
-            for _ in range(8):
-                new_row.append(matrix_count)
-                matrix_count += 1
-            matrix.append(new_row)
-
-        return matrix
-
-
-def find_point(matrix, number):
-    found = False
-    x = 0
-    y = 0
-
-    for row in matrix:
-        x = 0
-        for element in row:
-
-            if element == number:
-                found = True
-                break
-            else:
-                x += 1
-
-        if found:
-            break
-        else:
-            y += 1
-
-    return x, y
-
-
-def generate_next_moves(start_x, start_y, game, depth=1, already_searched=[]):
+def generate_moves(start_x, start_y, matrix):
+    # All the potential locations a knight can land during a single move.
     potential_moves = [(-2, -1), (-2, 1),
                        (-1, -2), (-1, 2),
                        (1, -2), (1, 2),
                        (2, -1), (2, 1)
                        ]
 
-    already_searched.append((start_x, start_y))
+    search_moves = [(start_x, start_y)]
 
-    print "Start X: " + str(start_x)
-    print "Start Y: " + str(start_y)
-    for pot_x, pot_y in potential_moves:
-        next_x = start_x + pot_x
-        next_y = start_y + pot_y
-        next = (next_x, next_y)
+    while search_moves:
+        current_coordinate = search_moves.pop(0)
+        current_x = current_coordinate[0]
+        current_y = current_coordinate[-1]
 
-        if next_x in range(8) and next_y in range(8) and next not in already_searched:
+        for move_x, move_y in potential_moves:
+            next_x = current_x + move_x
+            next_y = current_y + move_y
 
-            print "Next X: " + str(next_x)
-            print "Next Y: " + str(next_y)
-            print "Move X: " + str(pot_x)
-            print "Move Y: " + str(pot_y)
-            print game.matrix[next_x][next_y]
-            raw_input()
-
-            if next_x == game.dx and next_y == game.dy:
-                return depth
-            else:
-                generate_next_moves(next_x, next_y, game, depth + 1, already_searched)
-
+            if next_x in range(0,8) and next_y in range(0,8):
+                if matrix[next_x][next_y] is None:
+                    matrix[next_x][next_y] = matrix[current_x][current_y] + 1
+                    search_moves.append((next_x, next_y))
 
 
 def answer(src, dst):
     game = ChessGame(src, dst)
-    depth = generate_next_moves(game.sx, game.sy, game)
+    depth = generate_next_moves(game.sx, game.sy, game.matrix)
 
     return depth
 
