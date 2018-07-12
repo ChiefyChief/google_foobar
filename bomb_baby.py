@@ -17,12 +17,12 @@ def answer(m, f):
     current_iteration = [m, f]
     
     while min(current_iteration) > 1 and max(current_iteration) > 1:
-        if max(current_iteration) %min(current_iteration) == 0:
+        if divmod(int(max(current_iteration)), int(min(current_iteration)))[-1] == 0:
             return "impossible"
         
-        generations += max(current_iteration) / min(current_iteration)
+        generations += int(max(current_iteration)) // int(min(current_iteration))
         current_iteration.sort()
-        current_iteration[-1]  = max(current_iteration) %min(current_iteration)
+        current_iteration[-1]  = divmod(int(max(current_iteration)), int(min(current_iteration)))[1]
 
     return generations + max(current_iteration) - 1
 
