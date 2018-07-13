@@ -14,15 +14,15 @@ def answer(m, f):
     """
 
     generations = 0
-    current_iteration = [m, f]
+    current_iteration = [int(m), int(f)]
     
     while min(current_iteration) > 1 and max(current_iteration) > 1:
-        if divmod(int(max(current_iteration)), int(min(current_iteration)))[-1] == 0:
+        if max(current_iteration) % min(current_iteration) == 0:
             return "impossible"
         
-        generations += int(max(current_iteration)) // int(min(current_iteration))
+        generations += max(current_iteration) / min(current_iteration)
         current_iteration.sort()
-        current_iteration[-1]  = divmod(int(max(current_iteration)), int(min(current_iteration)))[1]
+        current_iteration[-1]  = max(current_iteration) % min(current_iteration)
 
     return generations + max(current_iteration) - 1
 
